@@ -19,14 +19,15 @@ class Config:
     
     def __init__(self):
         """Initialize configuration with values from environment variables."""
+        # Main web scraper settings
         self.target_url = os.getenv('TARGET_URL', 'https://httpbin.org/html')
         self.selectors = self._parse_selectors()
         self.delay_range = (
-            float(os.getenv('DELAY_MIN', 2)),
-            float(os.getenv('DELAY_MAX', 4))
+            float(os.getenv('DELAY_MIN', '2')),
+            float(os.getenv('DELAY_MAX', '4'))
         )
-        self.timeout = int(os.getenv('TIMEOUT', 30))
-        self.max_retries = int(os.getenv('MAX_RETRIES', 3))
+        self.timeout = int(os.getenv('TIMEOUT', '30'))
+        self.max_retries = int(os.getenv('MAX_RETRIES', '3'))
         self.respect_robots = os.getenv('RESPECT_ROBOTS', 'true').lower() == 'true'
         self.use_selenium = os.getenv('USE_SELENIUM', 'false').lower() == 'true'
         
@@ -49,6 +50,11 @@ class Config:
         # Logging settings
         self.log_level = os.getenv('LOG_LEVEL', 'INFO')
         self.log_file = os.getenv('LOG_FILE', 'scraper.log')
+        
+        # Wikipedia scraper settings
+        self.wiki_url = os.getenv('WIKI_URL', 'https://en.wikipedia.org/wiki/Cloud-computing_comparison')
+        self.wiki_table_index = int(os.getenv('WIKI_TABLE_INDEX', '0'))
+        self.wiki_output_file = os.getenv('WIKI_OUTPUT_FILE', 'wikipedia_table_data.csv')
     
     def _parse_selectors(self) -> Dict[str, str]:
         """Parse CSS selectors from environment variable."""
@@ -91,7 +97,10 @@ class Config:
             'selenium_headless': self.selenium_headless,
             'selenium_window_size': self.selenium_window_size,
             'log_level': self.log_level,
-            'log_file': self.log_file
+            'log_file': self.log_file,
+            'wiki_url': self.wiki_url,
+            'wiki_table_index': self.wiki_table_index,
+            'wiki_output_file': self.wiki_output_file
         }
 
 

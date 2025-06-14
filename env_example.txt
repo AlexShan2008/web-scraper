@@ -1,9 +1,12 @@
 # Web Scraper Configuration
 # Copy this file to .env and fill in your values
 
+# =============================================================================
+# MAIN WEB SCRAPER SETTINGS
+# =============================================================================
+
 # Target URL to scrape
 TARGET_URL=https://httpbin.org/html
-WIKI_URL=https://en.wikipedia.org/wiki/Cloud-computing_comparison
 
 # CSS Selectors for data extraction (JSON format)
 # Format: {"field_name": "css_selector"}
@@ -37,3 +40,16 @@ SELENIUM_WINDOW_SIZE=1920,1080
 # Logging settings
 LOG_LEVEL=INFO
 LOG_FILE=scraper.log
+
+# =============================================================================
+# WIKIPEDIA TABLE SCRAPER SETTINGS
+# =============================================================================
+
+# Wikipedia URL to scrape
+WIKI_URL=https://en.wikipedia.org/wiki/Cloud-computing_comparison
+
+# Table index to scrape (0 = first table, 1 = second table, etc.)
+WIKI_TABLE_INDEX=0
+
+# Output file for Wikipedia table data
+WIKI_OUTPUT_FILE=wikipedia_table_data.csv 

@@ -47,15 +47,6 @@ except ImportError:
     USER_AGENT_AVAILABLE = False
     print("fake-useragent not available. Using default user agent.")
 
-# Environment variables
-try:
-    from dotenv import load_dotenv
-    load_dotenv()
-    ENV_AVAILABLE = True
-except ImportError:
-    ENV_AVAILABLE = False
-    print("python-dotenv not available. Environment variables not loaded.")
-
 # Data manipulation
 try:
     import pandas as pd
@@ -171,9 +162,12 @@ class WebScraper:
             user_agent = config.custom_user_agent or self._get_user_agent()
             chrome_options.add_argument(f"--user-agent={user_agent}")
             
-            # Set Chrome driver path if specified
+            # Set Chrome driver path if specified in config
             if config.chrome_driver_path:
+                # Use os.environ only for Selenium's internal configuration
+                # This is necessary for Selenium to find the ChromeDriver
                 os.environ['webdriver.chrome.driver'] = config.chrome_driver_path
+                logger.info(f"Using ChromeDriver from: {config.chrome_driver_path}")
             
             self.driver = webdriver.Chrome(options=chrome_options)
             logger.info("Selenium WebDriver initialized successfully")

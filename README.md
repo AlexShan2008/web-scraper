@@ -16,6 +16,8 @@ A comprehensive web scraping solution built with Python, following best practice
 - **Proxy support** for HTTP and HTTPS
 - **Comprehensive logging** and statistics tracking
 - **Context manager** support for resource management
+- **Wikipedia table scraper** for specialized table data extraction
+- **Unified configuration** across all scraper components
 
 ## Prerequisites
 
@@ -80,6 +82,24 @@ data = scraper.scrape_website("https://example.com")
 scraper.export_to_csv(data, "output.csv")
 ```
 
+### Wikipedia Table Scraping
+
+```python
+from wiki_table_scraper import scrape_wikipedia_table
+
+# Scrape Wikipedia table using configuration
+df = scrape_wikipedia_table()
+
+# Or specify custom parameters
+df = scrape_wikipedia_table(
+    url="https://en.wikipedia.org/wiki/Your_page",
+    table_index=1  # Second table on the page
+)
+
+# Save to CSV
+df.to_csv("my_table_data.csv", index=False)
+```
+
 ### Advanced Usage with Custom Configuration
 
 ```python
@@ -122,12 +142,18 @@ print(f"Success rate: {stats['success_rate']:.2%}")
 The scraper automatically loads settings from environment variables. Create a `.env` file:
 
 ```env
+# Main scraper settings
 TARGET_URL=https://example.com
 SELECTORS={"title": "h1", "price": ".price", "description": ".desc"}
 DELAY_MIN=2
 DELAY_MAX=4
 OUTPUT_JSON=my_data.json
 OUTPUT_CSV=my_data.csv
+
+# Wikipedia scraper settings
+WIKI_URL=https://en.wikipedia.org/wiki/Your_page
+WIKI_TABLE_INDEX=0
+WIKI_OUTPUT_FILE=wiki_data.csv
 ```
 
 ### Context Manager Usage (Recommended)
@@ -147,6 +173,7 @@ with WebScraper() as scraper:
 ```
 web-scraper/
 ├── web_scraper.py          # Main scraper class with all functionality
+├── wiki_table_scraper.py   # Wikipedia table scraper
 ├── config.py               # Configuration management module
 ├── requirements.txt        # Python dependencies
 ├── .gitignore             # Git ignore rules
@@ -203,6 +230,11 @@ SELENIUM_WINDOW_SIZE=1920,1080
 # Logging settings
 LOG_LEVEL=INFO
 LOG_FILE=scraper.log
+
+# Wikipedia settings
+WIKI_URL=https://en.wikipedia.org/wiki/Your_page
+WIKI_TABLE_INDEX=0
+WIKI_OUTPUT_FILE=wiki_data.csv
 ```
 
 ### Configuration Options
@@ -227,6 +259,9 @@ LOG_FILE=scraper.log
 | `SELENIUM_WINDOW_SIZE` | Selenium window size                     | `1920,1080`                | `1366,768`                           |
 | `LOG_LEVEL`            | Logging level                            | `INFO`                     | `DEBUG`                              |
 | `LOG_FILE`             | Log file path                            | `scraper.log`              | `my_scraper.log`                     |
+| `WIKI_URL`             | Wikipedia URL to scrape                  | Cloud computing comparison | `https://en.wikipedia.org/wiki/...`  |
+| `WIKI_TABLE_INDEX`     | Table index to scrape                    | `0`                        | `1`                                  |
+| `WIKI_OUTPUT_FILE`     | Wikipedia output filename                | `wikipedia_table_data.csv` | `my_wiki_data.csv`                   |
 
 ### Benefits of Environment Variables
 
@@ -284,12 +319,30 @@ with WebScraper() as scraper:
     pass  # Resources automatically cleaned up
 ```
 
-### Security Notes
+### Wikipedia Table Scraper
 
-- **Never commit `.env` files** to version control
-- Add `.env` to your `.gitignore` file
-- Use `.env.example` as a template for required variables
-- Keep sensitive information (proxies, API keys) in environment variables
+#### Functions
+
+- `scrape_wikipedia_table(url=None, table_index=None)`: Scrape table data from Wikipedia pages
+
+#### Parameters
+
+- `url` (str, optional): Wikipedia URL to scrape. Uses `config.wiki_url` if not provided
+- `table_index` (int, optional): Index of table to scrape. Uses `config.wiki_table_index` if not provided
+
+#### Returns
+
+- `pandas.DataFrame`: The scraped table data
+
+### Configuration Management
+
+All configuration is managed through the `config` module, which provides:
+
+- **Unified access**: All settings accessible via `config.variable_name`
+- **Environment variable loading**: Automatic loading from `.env` files
+- **Default values**: Sensible defaults for all settings
+- **Type conversion**: Automatic conversion of string values to appropriate types
+- **Validation**: Basic validation and error handling
 
 ## Best Practices
 
